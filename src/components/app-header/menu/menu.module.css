@@ -1,0 +1,27 @@
+.nav ul, .nav li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menuButton {
+    composes: p-5 from global;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.menuButtonText {
+    composes: pl-2 text text_type_main-default from global;
+    text-decoration: none;
+    color: #8585AD;
+}
+
+.hovered {
+    color: #F2F2F3;
+}
+
+.nav ul {
+    display: flex;
+    flex-direction: row;
+}

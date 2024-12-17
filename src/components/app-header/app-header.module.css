@@ -1,0 +1,17 @@
+.logo {
+    place-self: center;
+}
+
+.profile {
+    place-self: end;
+    align-self: center;
+}
+
+.burgerHeader {
+    composes: pt-4 pb-4 from global;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    justify-content: start;
+    width: var(--burger-app-width);
+}

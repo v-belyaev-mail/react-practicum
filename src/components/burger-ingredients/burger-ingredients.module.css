@@ -11,8 +11,10 @@
 
 .wrapper {
     composes: custom-scroll from global;
-    height: auto;
-    overflow: auto;
+    min-height: 40px;
+    width: 100%;
+    overflow: hidden auto;
+    box-sizing: border-box;
 }
 
 .items {

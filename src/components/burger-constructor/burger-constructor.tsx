@@ -1,30 +1,34 @@
 import styles from './burger-constructor.module.css';
 import {Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import {IBurgerConstructorItem} from "./burger-constructor-types.ts";
-import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
-import {ConstructorIngredient} from "./constructor-ingredient.tsx";
+import {IBurgerConstructorIngredient} from "./burger-constructor-types.ts";
+import {FC, useEffect, useRef, useState} from "react";
+import {ConstructorIngredient} from "../constructor-ingredient/constructor-ingredient.tsx";
+import {Modal} from "../modal/modal.tsx";
+import {OrderDetails} from "../order-details/order-details.tsx";
 
 interface IBurgerConstructorProps {
-    items: IBurgerConstructorItem[];
+    ingredients: IBurgerConstructorIngredient[];
 }
 
-export const BurgerConstructor = (props: IBurgerConstructorProps) => {
-    const bun: string = "60666c42cc7b410027a1a9b1";
-    const ingredients: string[] = [
-        "60666c42cc7b410027a1a9b5",
-        "60666c42cc7b410027a1a9b6",
-        "60666c42cc7b410027a1a9b7",
-        "60666c42cc7b410027a1a9b9",
+export const BurgerConstructor:FC<IBurgerConstructorProps> = (props) => {
+    const selectedBun: string = "643d69a5c3f7b9001cfa093c";
+    const selectedIngredients: string[] = [
+        "643d69a5c3f7b9001cfa093e",
+        "643d69a5c3f7b9001cfa0941",
+        "643d69a5c3f7b9001cfa0942",
+        "643d69a5c3f7b9001cfa0941",
+        "643d69a5c3f7b9001cfa0943",
     ];
     const wrapperRef = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
-    const [height, setHeight]:[number, Dispatch<SetStateAction<number>>] = useState(0);
+    const [height, setHeight] = useState<number>(0);
+    const [placed, setPlaced] = useState<boolean>(false);
 
-    const getElement:(id:string) => IBurgerConstructorItem | undefined = (id) => {
-        return props.items.find(item => item._id === id)
+    const getElement:(id:string) => IBurgerConstructorIngredient | undefined = (id) => {
+        return props.ingredients.find(ingredient => ingredient._id === id)
     }
 
-    const bunItem = getElement(bun)
+    const bunItem = getElement(selectedBun)
 
     useEffect(() => {
         window.addEventListener('resize', onResize);
@@ -36,7 +40,7 @@ export const BurgerConstructor = (props: IBurgerConstructorProps) => {
 
     const onResize = () => {
         if(wrapperRef.current && totalRef.current) {
-            const bunHeight:number = bun ? 96 : 0;
+            const bunHeight:number = selectedBun ? 96 : 0;
             setHeight(window.innerHeight - wrapperRef.current.offsetTop - totalRef.current.offsetHeight - bunHeight);
         }
     }
@@ -51,12 +55,12 @@ export const BurgerConstructor = (props: IBurgerConstructorProps) => {
             }
             <ul className={styles.wrapper} ref={wrapperRef} style={{'maxHeight': height > 0 ? height + 'px' : 'auto'}}>
                 {
-                    ingredients.map((ingredient, index) => {
-                        const item:IBurgerConstructorItem | undefined = getElement(ingredient);
-                        return item && (
+                    selectedIngredients.map((ingredientId, index) => {
+                        const ingredient:IBurgerConstructorIngredient | undefined = getElement(ingredientId);
+                        return ingredient && (
                             <li key={index}>
                                 <ConstructorIngredient
-                                    item={item}
+                                    item={ingredient}
                                 />
                             </li>
                         )
@@ -74,10 +78,15 @@ export const BurgerConstructor = (props: IBurgerConstructorProps) => {
                     1337
                     <CurrencyIcon type="primary" />
                 </span>
-                <Button htmlType="button" type="primary" size="large">
+                <Button htmlType="button" type="primary" size="large" onClick={() => setPlaced(true)}>
                     Оформить заказ
                 </Button>
             </div>
+            {
+                placed && <Modal onClose={() => setPlaced(false)}>
+                    <OrderDetails/>
+                </Modal>
+            }
         </div>
     )
 }

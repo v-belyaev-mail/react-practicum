@@ -1,0 +1,39 @@
+.modal {
+    composes: pl-10 pt-10 pr-10 pb-15 from global;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1C1C21;
+    border: 1px solid #4C4CFF33;
+    box-shadow: 0px 0px 1px 0px #0000000A,
+        0px 4px 8px 0px #0000000A,
+        0px 16px 24px 0px #0000000A,
+        0px 24px 32px 0px #0000000A;
+    border-radius: 40px;
+    width: var(--burger-app-modal-width);
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title {
+    composes: text text_type_main-large from global;
+}
+
+.close_icon {
+    cursor: pointer;
+}
+
+.close_icon_no_title {
+    composes: pt-15 pr-10 from global;
+    position: absolute;
+    top:0;
+    right:0;
+    cursor: pointer;
+}

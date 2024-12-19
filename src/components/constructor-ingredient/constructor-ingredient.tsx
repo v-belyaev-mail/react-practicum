@@ -1,10 +1,10 @@
 import {FC} from "react";
-import {IBurgerConstructorItem} from "./burger-constructor-types.ts";
+import {IBurgerConstructorIngredient} from "../burger-constructor/burger-constructor-types.ts";
 import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from './constructor-ingredient.module.css'
 
 type ConstructorIngredientProps = {
-    item: IBurgerConstructorItem,
+    item: IBurgerConstructorIngredient,
     type?: "top" | "bottom"
 }
 

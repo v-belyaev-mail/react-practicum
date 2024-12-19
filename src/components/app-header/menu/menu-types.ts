@@ -5,4 +5,5 @@ export type MenuItemType = {
     title: string,
     href: string,
     icon: FC<TIconProps>
+    selected?: boolean;
 }

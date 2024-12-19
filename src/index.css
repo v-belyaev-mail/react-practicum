@@ -1,6 +1,8 @@
 :root {
   --burger-app-width: 1280px;
   --burger-app-content-width: 1240px;
+  --burger-app-modal-width: 720px;
+  --burger-app-modal-content-width: 520px;
 }
 
 body {
@@ -9,7 +11,7 @@ body {
   color: #F2F2F3;
 }
 
-ul,li {
+ul,li,p {
   margin: 0;
   padding: 0;
 }

@@ -3,7 +3,7 @@ export interface IBurgerConstructorCategory {
     name: string;
 }
 
-export interface IBurgerConstructorItem {
+export interface IBurgerConstructorIngredient {
     _id: string;
     name: string;
     type: string;

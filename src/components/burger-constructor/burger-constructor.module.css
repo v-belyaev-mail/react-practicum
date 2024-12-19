@@ -7,14 +7,14 @@
 }
 .wrapper {
     min-height: 40px;
-    overflow: auto;
+    overflow: hidden auto;
     list-style: none;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: calc(var(--offset-base-size) * 4);
     box-sizing: border-box;
-    composes: mt-4 mb-4 from global;
+    composes: mt-4 mb-4 custom-scroll from global;
 }
 .total {
     composes: pt-10 pb-10 from global;

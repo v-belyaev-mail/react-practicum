@@ -1,11 +1,11 @@
-import {Dispatch, FC, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState} from "react";
+import {FC, useEffect, useMemo, useRef, useState} from "react";
 import {MenuItemType} from "./menu-types.ts";
 import styles from "./menu.module.css"
 
-const MenuItem:FC<MenuItemType> = ({title, href, icon}) => {
+const MenuItem:FC<MenuItemType> = ({title, href, icon, selected}) => {
     const Icon = icon;
-    const itemRef: MutableRefObject<HTMLSpanElement | null> = useRef<HTMLSpanElement>(null);
-    const [isHovered, setHovered]:[boolean, Dispatch<SetStateAction<boolean>>] = useState(false)
+    const itemRef = useRef<HTMLSpanElement |null>(null);
+    const [isHovered, setHovered] = useState<boolean>(false)
 
     useEffect(() => {
         if(itemRef?.current) {
@@ -27,11 +27,14 @@ const MenuItem:FC<MenuItemType> = ({title, href, icon}) => {
         setHovered(false)
     }
 
-    const textClassName:string = useMemo(() => `${styles.menuButtonText} ${isHovered ? styles.hovered : ''}`, [isHovered ])
+    const textClassName:string = useMemo(() => (
+        `${styles.menuButtonText} ${isHovered || selected ? styles.hovered : ''}`),
+        [isHovered, selected]
+    );
 
     return (
         <span className={styles.menuButton} ref={itemRef}>
-            <Icon type={isHovered ? "primary" : "secondary"}/>
+            <Icon type={isHovered || selected ? "primary" : "secondary"}/>
             <a href={href} className={textClassName}>{title}</a>
         </span>
     )

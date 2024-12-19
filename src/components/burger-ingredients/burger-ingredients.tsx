@@ -1,17 +1,20 @@
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
-import {IBurgerConstructorCategory, IBurgerConstructorItem} from "../burger-constructor/burger-constructor-types.ts";
-import {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
+import {IBurgerConstructorCategory, IBurgerConstructorIngredient} from "../burger-constructor/burger-constructor-types.ts";
+import {FC, useCallback, useEffect, useRef, useState} from "react";
 import styles from './burger-ingredients.module.css'
-import {Ingredient} from "./ingredient.tsx";
+import {Ingredient} from "../ingredient/ingredient.tsx";
+import {Modal} from "../modal/modal.tsx";
+import {IngredientDetails} from "../ingredient-details/ingredient-details.tsx";
 
 interface IBurgerIngredientsProps {
     categories: IBurgerConstructorCategory[],
-    items: IBurgerConstructorItem[]
+    ingredients: IBurgerConstructorIngredient[]
 }
 
-export const BurgerIngredients = (props: IBurgerIngredientsProps) => {
-    const [category, setCategory]:[string, Dispatch<SetStateAction<string>>] = useState("bun");
-    const [height, setHeight]:[number, Dispatch<SetStateAction<number>>] = useState(0);
+export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
+    const [category, setCategory] = useState<string>("bun");
+    const [height, setHeight] = useState<number>(0);
+    const [selectedIngredient, setSelectedIngredient] = useState<IBurgerConstructorIngredient|null>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,6 +30,14 @@ export const BurgerIngredients = (props: IBurgerIngredientsProps) => {
             setHeight(window.innerHeight - wrapperRef.current.offsetTop)
         }
     }
+
+    const onClosePopup:() => void = useCallback(() => {
+        setSelectedIngredient(null);
+    }, [setSelectedIngredient]);
+
+    const onShowPopup:(ingredient: IBurgerConstructorIngredient) => void = useCallback((ingredient) => {
+        setSelectedIngredient(ingredient)
+    }, [setSelectedIngredient]);
 
     return (
         <>
@@ -46,8 +57,8 @@ export const BurgerIngredients = (props: IBurgerIngredientsProps) => {
                             <h2 className={styles.category_name}>{name}</h2>
                             <div className={styles.items}>
                                 {
-                                    props.items.map(item => (
-                                        item.type === id && <Ingredient item={item} key={item._id}/>
+                                    props.ingredients.map(ingredient => (
+                                        ingredient.type === id && <Ingredient item={ingredient} key={ingredient._id} onDetail={() => onShowPopup(ingredient)}/>
                                     ))
                                 }
                             </div>
@@ -55,6 +66,9 @@ export const BurgerIngredients = (props: IBurgerIngredientsProps) => {
                     ))
                 }
             </div>
+            {selectedIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
+                <IngredientDetails ingredient={selectedIngredient}/>
+            </Modal>}
         </>
     )
 }

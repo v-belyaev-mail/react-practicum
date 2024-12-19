@@ -7,7 +7,8 @@ const menuItems:MenuItemType[] = [
     {
         title: "Конструктор",
         href: "#",
-        icon: BurgerIcon
+        icon: BurgerIcon,
+        selected: true
     },
     {
         title: "Лента заказов",

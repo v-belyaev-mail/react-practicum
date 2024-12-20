@@ -14,18 +14,18 @@ export const Modal:FC<ModalProps> = ({title, children, onClose}) => {
     const container:HTMLElement|null = document.getElementById('modals');
 
     useEffect(() => {
+        const onKeyboardClick:(ev:KeyboardEvent) => void = (ev) => {
+            if(ev.key === 'Escape') {
+                onClose();
+            }
+        }
+
         document.addEventListener('keyup', onKeyboardClick);
 
         return () => {
             document.removeEventListener('keyup', onKeyboardClick);
         }
     }, []);
-
-    const onKeyboardClick:(ev:KeyboardEvent) => void = (ev) => {
-        if(ev.key === 'Escape') {
-            onClose();
-        }
-    }
 
     const onCloseClick:() => void = useCallback(() => {
         onClose()

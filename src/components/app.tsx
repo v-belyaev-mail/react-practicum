@@ -10,9 +10,14 @@ export default function App()
 
     useEffect(() => {
         fetch(ApiGetIngredients)
-            .then(res => res.json())
+            .then(res => {
+                if(res.ok) {
+                    return res.json();
+                }
+                return Promise.reject(`Ошибка: статус ${res.status}`);
+            })
             .then(json => json.data && setIngredients(json.data))
-            .catch(err => console.error(err));
+            .catch(console.error);
     }, [])
 
     return (

@@ -5,6 +5,7 @@ import {FC, useEffect, useRef, useState} from "react";
 import {ConstructorIngredient} from "../constructor-ingredient/constructor-ingredient.tsx";
 import {Modal} from "../modal/modal.tsx";
 import {OrderDetails} from "../order-details/order-details.tsx";
+import {useModal} from "../../hooks/useModal.ts";
 
 interface IBurgerConstructorProps {
     ingredients: IBurgerConstructorIngredient[];
@@ -22,7 +23,7 @@ export const BurgerConstructor:FC<IBurgerConstructorProps> = (props) => {
     const wrapperRef = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<number>(0);
-    const [placed, setPlaced] = useState<boolean>(false);
+    const {isModalOpen, openModal, closeModal} = useModal();
 
     const getElement:(id:string) => IBurgerConstructorIngredient | undefined = (id) => {
         return props.ingredients.find(ingredient => ingredient._id === id)
@@ -78,12 +79,12 @@ export const BurgerConstructor:FC<IBurgerConstructorProps> = (props) => {
                     1337
                     <CurrencyIcon type="primary" />
                 </span>
-                <Button htmlType="button" type="primary" size="large" onClick={() => setPlaced(true)}>
+                <Button htmlType="button" type="primary" size="large" onClick={() => openModal()}>
                     Оформить заказ
                 </Button>
             </div>
             {
-                placed && <Modal onClose={() => setPlaced(false)}>
+                isModalOpen && <Modal onClose={() => closeModal()}>
                     <OrderDetails/>
                 </Modal>
             }

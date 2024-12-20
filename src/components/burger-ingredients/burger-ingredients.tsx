@@ -5,6 +5,7 @@ import styles from './burger-ingredients.module.css'
 import {Ingredient} from "../ingredient/ingredient.tsx";
 import {Modal} from "../modal/modal.tsx";
 import {IngredientDetails} from "../ingredient-details/ingredient-details.tsx";
+import {useModal} from "../../hooks/useModal.ts";
 
 interface IBurgerIngredientsProps {
     categories: IBurgerConstructorCategory[],
@@ -15,6 +16,7 @@ export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
     const [category, setCategory] = useState<string>("bun");
     const [height, setHeight] = useState<number>(0);
     const [selectedIngredient, setSelectedIngredient] = useState<IBurgerConstructorIngredient|null>(null);
+    const {isModalOpen, openModal, closeModal} = useModal();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -33,11 +35,13 @@ export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
 
     const onClosePopup:() => void = useCallback(() => {
         setSelectedIngredient(null);
-    }, [setSelectedIngredient]);
+        closeModal();
+    }, [setSelectedIngredient, closeModal]);
 
     const onShowPopup:(ingredient: IBurgerConstructorIngredient) => void = useCallback((ingredient) => {
-        setSelectedIngredient(ingredient)
-    }, [setSelectedIngredient]);
+        setSelectedIngredient(ingredient);
+        openModal();
+    }, [setSelectedIngredient, openModal]);
 
     return (
         <>
@@ -66,7 +70,7 @@ export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
                     ))
                 }
             </div>
-            {selectedIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
+            {isModalOpen && selectedIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
                 <IngredientDetails ingredient={selectedIngredient}/>
             </Modal>}
         </>

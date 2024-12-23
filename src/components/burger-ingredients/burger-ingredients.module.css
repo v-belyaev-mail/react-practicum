@@ -1,0 +1,26 @@
+.tabs {
+    composes: pb-10 from global;
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+}
+
+.category_name {
+    composes: text text_type_main-medium from global;
+}
+
+.wrapper {
+    composes: custom-scroll from global;
+    min-height: 40px;
+    width: 100%;
+    overflow: hidden auto;
+    box-sizing: border-box;
+}
+
+.items {
+    composes: pl-4 pr-4 pt-6 pb-10 from global;
+    display: grid;
+    box-sizing: border-box;
+    grid-gap: calc(var(--offset-base-size) * 8) calc(var(--offset-base-size) * 6);
+    grid-template-columns: repeat(2, 1fr);
+}

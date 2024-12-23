@@ -1,0 +1,9 @@
+.element {
+    display: flex;
+    align-items: center;
+}
+
+.drag_icon {
+    cursor: pointer;
+    composes: mr-2 from global;
+}

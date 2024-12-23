@@ -1,0 +1,1 @@
+export const ApiGetIngredients: string = 'https://norma.nomoreparties.space/api/ingredients';

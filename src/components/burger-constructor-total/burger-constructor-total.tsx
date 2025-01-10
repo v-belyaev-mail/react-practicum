@@ -21,11 +21,11 @@ export const BurgerConstructorTotal:FC<TBurgerConstructorTotalProps> = ({onSubmi
                 if(bunIngredient) totalPrice = bunIngredient.price * 2
             }
 
-            totalPrice += selectedIngredients.reduce((accumulator, ingredientId) => {
-                const ingredient =  ingredients.find(
-                    (ingredient) => ingredient._id === ingredientId
+            totalPrice += selectedIngredients.reduce((accumulator, {ingredient}) => {
+                const ingredientItem =  ingredients.find(
+                    (item) => item._id === ingredient
                 )
-                return accumulator + (ingredient ? ingredient?.price : 0);
+                return accumulator + (ingredientItem ? ingredientItem?.price : 0);
             }, 0)
 
             return totalPrice
@@ -39,7 +39,7 @@ export const BurgerConstructorTotal:FC<TBurgerConstructorTotalProps> = ({onSubmi
                 {totalPrice}
                 <CurrencyIcon type="primary"/>
             </span>
-            <Button htmlType="submit" type="primary" size="large" onClick={onSubmit}>
+            <Button htmlType="submit" size="large" onClick={onSubmit}>
                 Оформить заказ
             </Button>
         </>

@@ -10,6 +10,7 @@ import type { Identifier, XYCoord } from 'dnd-core'
 type TConstructorIngredientProps = {
     item: IBurgerConstructorIngredient;
     index?: number;
+    ingredientKey?: string;
     type?: "top" | "bottom";
     onMove?: (sort:TConstructorIngredientsSortObject) => void;
 }
@@ -19,7 +20,7 @@ type TDragIngredientProps = {
     index?: number;
 }
 
-export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, type, index, onMove}) => {
+export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, type, index, onMove, ingredientKey}) => {
     const dispatch = useAppDispatch();
     const ingredientRef = useRef<HTMLDivElement | null>(null)
     const [{isDragging}, ingredientDrag, ingredientPreview] = useDrag({
@@ -101,12 +102,12 @@ export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, typ
     }
 
     const onDeleteClick = useCallback(() => {
-        if(index !== undefined && item.type !== "bun") {
-            dispatch(burgerConstructorSlice.actions.removeIngredientByIndex(index))
+        if(ingredientKey !== undefined && item.type !== "bun") {
+            dispatch(burgerConstructorSlice.actions.removeIngredientByKey(ingredientKey))
         } else if(item.type === "bun") {
             dispatch(burgerConstructorSlice.actions.removeBun())
         }
-    }, [dispatch])
+    }, [dispatch, ingredientKey])
 
     return (
         <div className={className} ref={ingredientRef} style={{opacity}} data-handler-id={handlerId}>

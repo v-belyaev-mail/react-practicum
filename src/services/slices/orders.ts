@@ -1,14 +1,15 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {TOrderCreateResponse, TOrderCreateRequest} from "../../utils/types.ts";
 import {sendOrderApi} from "../api.ts";
-import {loadIngredients} from "./ingredients.ts";
 
 type TOrdersInitialState = {
     lastOrder: TOrderCreateResponse | null,
+    beingSent: boolean,
 }
 
 const ordersInitialState: TOrdersInitialState = {
     lastOrder: null,
+    beingSent: false,
 }
 
 export const sendOrder = createAsyncThunk(
@@ -28,9 +29,14 @@ export const ordersSlice = createSlice({
         builder
             .addCase(sendOrder.fulfilled, (state, action) => {
                 state.lastOrder = action.payload;
+                state.beingSent = false;
             })
-            .addCase(loadIngredients.pending, (state) => {
+            .addCase(sendOrder.pending, (state) => {
                 state.lastOrder = null;
+                state.beingSent = true;
+            })
+            .addCase(sendOrder.rejected, (state) => {
+                state.beingSent = false;
             })
     }
 })

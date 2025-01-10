@@ -41,3 +41,8 @@ export type TConstructorIngredientsSortObject = {
     dragIndex:number;
     hoverIndex:number;
 }
+
+export type TConstructorIngredient = {
+    ingredient: string;
+    key: string;
+}

@@ -6,7 +6,12 @@ import {Modal} from "../modal/modal.tsx";
 import {OrderDetails} from "../order-details/order-details.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
-import {TConstructorIngredientsSortObject, TIngredientDropData, TOrderCreateRequest} from "../../utils/types.ts";
+import {
+    TConstructorIngredient,
+    TConstructorIngredientsSortObject,
+    TIngredientDropData,
+    TOrderCreateRequest
+} from "../../utils/types.ts";
 import {sendOrder} from "../../services/slices/orders.ts";
 import {useDrop} from "react-dnd";
 import {burgerConstructorSlice} from "../../services/slices/burger-constructor.ts";
@@ -16,7 +21,7 @@ export const BurgerConstructor = () => {
     const dispatch = useAppDispatch();
     const {selectedBun, selectedIngredients} = useAppSelector(store => store.burgerConstructor)
     const {ingredients} = useAppSelector(store => store.ingredients)
-    const {lastOrder} = useAppSelector(store => store.orders)
+    const {lastOrder, beingSent} = useAppSelector(store => store.orders)
     const wrapperRef:MutableRefObject<HTMLUListElement | null> = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState<number>(0);
@@ -49,15 +54,16 @@ export const BurgerConstructor = () => {
         }
     }
 
-    const renderIngredient = useCallback((ingredient:string, index:number) => {
+    const renderIngredient = useCallback((ingredient:TConstructorIngredient, index:number) => {
         const item = ingredients.find(
-            burgerIngredient => burgerIngredient._id === ingredient
+            burgerIngredient => burgerIngredient._id === ingredient.ingredient
         )
         return item ? (
-            <li key={`${index}_${ingredient}`}>
+            <li key={ingredient.key}>
                 <ConstructorIngredient
                     item={item}
                     index={index}
+                    ingredientKey={ingredient.key}
                     onMove={onSort}
                 />
             </li>
@@ -83,7 +89,7 @@ export const BurgerConstructor = () => {
                 extraClass="ml-8"
             />
         )
-    }, [])
+    }, [ingredients])
 
     const onSort = useCallback((sort:TConstructorIngredientsSortObject) => {
         dispatch(burgerConstructorSlice.actions.sortIngredients(sort))
@@ -91,9 +97,18 @@ export const BurgerConstructor = () => {
 
     const onSubmitOrder = (e:SyntheticEvent<Element, Event>) => {
         e.preventDefault();
-        if(!selectedBun) return;
+        if(!selectedBun || selectedIngredients.length === 0) {
+            alert("Выберите булку и ингридиенты для оформления заказа!");
+            return;
+        } else if(beingSent) {
+            return; //Уже происходит отправка заказа
+        }
         const orderData: TOrderCreateRequest = {
-            ingredients: [selectedBun, ...selectedIngredients, selectedBun],
+            ingredients: [
+                selectedBun,
+                ...selectedIngredients.map(ingredient => ingredient.ingredient),
+                selectedBun
+            ],
         }
         dispatch(sendOrder(orderData)).then((res) => {
             if(res.payload?.number) {

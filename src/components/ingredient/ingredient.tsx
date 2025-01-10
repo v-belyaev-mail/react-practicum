@@ -15,7 +15,7 @@ export const Ingredient:FC<IIngredientProps> = (props) => {
         () => props.item.type === "bun"
             ? props.item._id === selectedBun ? 2 : 0
             : selectedIngredients.reduce(
-            (accumulator, value) => value === props.item._id ? accumulator + 1 : accumulator,
+            (accumulator, {ingredient}) => ingredient === props.item._id ? accumulator + 1 : accumulator,
             0
         ),
         [selectedIngredients, selectedBun]

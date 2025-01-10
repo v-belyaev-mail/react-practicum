@@ -15,6 +15,7 @@
     width: 100%;
     overflow: hidden auto;
     box-sizing: border-box;
+    position: relative;
 }
 
 .items {

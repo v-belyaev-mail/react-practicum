@@ -17,3 +17,27 @@ export interface IBurgerConstructorIngredient {
     image_large: string;
     __v: number;
 }
+
+export type TRequestState = {
+    loading: boolean;
+    error: string | null;
+}
+
+export type TOrderCreateRequest = {
+    ingredients: string[];
+}
+
+export type TOrderCreateResponse = {
+    number: string;
+}
+
+export type TIngredientDropData = {
+    id: string;
+    type: string;
+}
+
+export type TConstructorIngredientsSortObject = {
+
+    dragIndex:number;
+    hoverIndex:number;
+}

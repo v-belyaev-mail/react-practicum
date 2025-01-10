@@ -1,32 +1,25 @@
 import AppHeader from "./app-header/app-header.tsx";
 import {ConstructorPage} from "./app-content/page/constructor-page.tsx";
-import {useEffect, useState} from "react";
-import {IBurgerConstructorIngredient} from "./burger-constructor/burger-constructor-types.ts";
-import {ApiGetIngredients} from "../constants/api.ts";
+import {useEffect} from "react";
+import {loadIngredients} from "../services/slices/ingredients.ts";
+import {useAppDispatch, useAppSelector} from "../hooks/redux.ts";
 
 export default function App()
 {
-    const [ingredients, setIngredients] = useState<IBurgerConstructorIngredient[] | undefined>();
+    const dispatch = useAppDispatch();
+    const {loading} = useAppSelector(store => store.ingredients);
 
     useEffect(() => {
-        fetch(ApiGetIngredients)
-            .then(res => {
-                if(res.ok) {
-                    return res.json();
-                }
-                return Promise.reject(`Ошибка: статус ${res.status}`);
-            })
-            .then(json => json.data && setIngredients(json.data))
-            .catch(console.error);
-    }, [])
+        dispatch(loadIngredients());
+    }, [dispatch])
 
     return (
         <div className="burger-app">
             {
-                ingredients && (
+                !loading && (
                     <>
-                    <AppHeader/>
-                    <ConstructorPage ingredients={ingredients} />
+                        <AppHeader/>
+                        <ConstructorPage />
                     </>
                 )
             }

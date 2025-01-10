@@ -22,10 +22,10 @@
     justify-content: flex-end;
 }
 
-.price {
-    composes: text text_type_digits-medium pr-10 from global;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+.ingredientsBox {
+    position: inherit;
+}
+
+.whenHoverDrop {
+    transform: scale(110%);
 }

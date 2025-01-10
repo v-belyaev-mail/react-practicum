@@ -1,10 +1,15 @@
 import {FC} from "react";
 import styles from './order-details.module.css'
+import {useAppSelector} from "../../hooks/redux.ts";
 
 export const OrderDetails:FC = () => {
+    const {lastOrder} = useAppSelector(store => store.orders)
+
+    if(!lastOrder) return;
+
     return (
         <section className={styles.box}>
-            <p className={styles.order_number}>034536</p>
+            <p className={styles.order_number}>{lastOrder.number}</p>
             <p className={styles.order_number_title}>идентификатор заказа</p>
             <img src="/images/success-order.svg" alt="Заказ оформлен" className={styles.success_icon}/>
             <p className={styles.status}>Ваш заказ начали готовить</p>

@@ -1,4 +1,4 @@
-import {IBurgerConstructorIngredient} from "../burger-constructor/burger-constructor-types.ts";
+import {IBurgerConstructorIngredient} from "../../utils/types.ts";
 import {FC} from "react";
 import styles from './ingredient-details.module.css'
 

@@ -1,68 +1,89 @@
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
-import {IBurgerConstructorCategory, IBurgerConstructorIngredient} from "../burger-constructor/burger-constructor-types.ts";
-import {FC, useCallback, useEffect, useRef, useState} from "react";
+import {IBurgerConstructorCategory, IBurgerConstructorIngredient} from "../../utils/types.ts";
+import {useCallback, useEffect, useRef, useState} from "react";
 import styles from './burger-ingredients.module.css'
 import {Ingredient} from "../ingredient/ingredient.tsx";
 import {Modal} from "../modal/modal.tsx";
 import {IngredientDetails} from "../ingredient-details/ingredient-details.tsx";
 import {useModal} from "../../hooks/useModal.ts";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
+import {ingredientsSlice} from "../../services/slices/ingredients.ts";
 
-interface IBurgerIngredientsProps {
-    categories: IBurgerConstructorCategory[],
-    ingredients: IBurgerConstructorIngredient[]
-}
+const categories:IBurgerConstructorCategory[] = [
+    {
+        id: "bun",
+        name: "Булки"
+    },
+    {
+        id: "sauce",
+        name: "Соусы"
+    },
+    {
+        id: "main",
+        name: "Начинки"
+    }
+];
 
-export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
+export const BurgerIngredients = () => {
     const [category, setCategory] = useState<string>("bun");
-    const [height, setHeight] = useState<number>(0);
-    const [selectedIngredient, setSelectedIngredient] = useState<IBurgerConstructorIngredient|null>(null);
     const {isModalOpen, openModal, closeModal} = useModal();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
+    const dispatch = useAppDispatch();
+    const {ingredients, currentIngredient} = useAppSelector(store => store.ingredients);
+
     useEffect(() => {
-        window.addEventListener('resize', onResize);
-        onResize()
+        wrapperRef.current?.addEventListener('scroll', onScroll);
         return () => {
-            window.removeEventListener('resize', onResize);
+            wrapperRef.current?.removeEventListener('scroll', onScroll);
         }
     }, [])
 
-    const onResize = () => {
+    const onScroll = () => {
         if(wrapperRef.current) {
-            setHeight(window.innerHeight - wrapperRef.current.offsetTop)
+            const scrollTop = wrapperRef.current.scrollTop;
+            wrapperRef.current.querySelectorAll<HTMLElement>('[data-category]').forEach((el) => {
+                if (el.offsetTop <= scrollTop && el.offsetTop + el.scrollHeight > scrollTop) {
+                    if(el.dataset.category) setCategory(el.dataset.category);
+                }
+            })
         }
     }
 
     const onClosePopup:() => void = useCallback(() => {
-        setSelectedIngredient(null);
+        dispatch(ingredientsSlice.actions.setCurrentIngredient(null));
         closeModal();
-    }, [setSelectedIngredient, closeModal]);
+    }, [dispatch, closeModal]);
 
     const onShowPopup:(ingredient: IBurgerConstructorIngredient) => void = useCallback((ingredient) => {
-        setSelectedIngredient(ingredient);
+        dispatch(ingredientsSlice.actions.setCurrentIngredient(ingredient));
         openModal();
-    }, [setSelectedIngredient, openModal]);
+    }, [dispatch, openModal]);
 
     return (
         <>
             <ul className={styles.tabs}>
                 {
-                    props.categories.map(({id, name}) => (
+                    categories.map(({id, name}) => (
                         <li key={id}>
-                            <Tab active={id === category} value={id} onClick={setCategory}>{name}</Tab>
+                            <Tab active={id === category} value={id} onClick={setCategory} data-category={id}>{name}</Tab>
                         </li>
                     ))
                 }
             </ul>
-            <div className={styles.wrapper} ref={wrapperRef} style={{'maxHeight': height > 0 ? height + 'px' : 'auto'}}>
+            <div className={styles.wrapper} ref={wrapperRef}>
                 {
-                    props.categories.map(({id, name}) => (
+                    categories.map(({id, name}) => (
                         <div key={id} data-category={id}>
                             <h2 className={styles.category_name}>{name}</h2>
                             <div className={styles.items}>
                                 {
-                                    props.ingredients.map(ingredient => (
-                                        ingredient.type === id && <Ingredient item={ingredient} key={ingredient._id} onDetail={() => onShowPopup(ingredient)}/>
+                                    ingredients.map(ingredient => (
+                                        ingredient.type === id && <Ingredient
+                                            item={ingredient}
+                                            key={ingredient._id}
+                                            onDetail={() => onShowPopup(ingredient)}
+                                        />
                                     ))
                                 }
                             </div>
@@ -70,8 +91,8 @@ export const BurgerIngredients:FC<IBurgerIngredientsProps> = (props) => {
                     ))
                 }
             </div>
-            {isModalOpen && selectedIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
-                <IngredientDetails ingredient={selectedIngredient}/>
+            {isModalOpen && currentIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
+                <IngredientDetails ingredient={currentIngredient}/>
             </Modal>}
         </>
     )

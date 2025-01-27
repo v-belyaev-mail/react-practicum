@@ -3,9 +3,9 @@
     grid-template-areas:
     "ingredients_section constructor_section";
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: min-content 1fr;
+    grid-template-rows: calc(100vh - 96px);
     width: var(--burger-app-content-width);
-    grid-gap: 0 calc(var(--offset-base-size) * 10)
+    grid-gap: 0 calc(var(--offset-base-size) * 10);
 }
 
 .title {
@@ -14,8 +14,12 @@
 
 .ingredients_section {
     grid-area: ingredients_section;
+    display: flex;
+    flex-direction: column;
 }
 
 .constructor_section {
     grid-area: constructor_section;
+    display: flex;
+    flex-direction: column;
 }

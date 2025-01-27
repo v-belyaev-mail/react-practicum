@@ -2,11 +2,13 @@
     composes: pr-4 pl-4 pt-25 from global;
     display: flex;
     width: 100%;
+    height: 100%;
     flex-direction: column;
     box-sizing: border-box;
 }
 .wrapper {
     min-height: 40px;
+    max-height: 100%;
     overflow: hidden auto;
     list-style: none;
     width: 100%;
@@ -22,10 +24,14 @@
     justify-content: flex-end;
 }
 
-.price {
-    composes: text text_type_digits-medium pr-10 from global;
+.ingredientsBox {
+    position: inherit;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    flex-direction: column;
+    max-height: 100%;
+    min-height: 0;
+}
+
+.whenHoverDrop {
+    transform: scale(110%);
 }

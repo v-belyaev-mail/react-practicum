@@ -1,6 +1,6 @@
 import styles from './burger-constructor.module.css';
 import {ConstructorElement} from "@ya.praktikum/react-developer-burger-ui-components";
-import {MutableRefObject, SyntheticEvent, useCallback, useEffect, useRef, useState} from "react";
+import {MutableRefObject, SyntheticEvent, useCallback, useRef} from "react";
 import {ConstructorIngredient} from "../constructor-ingredient/constructor-ingredient.tsx";
 import {Modal} from "../modal/modal.tsx";
 import {OrderDetails} from "../order-details/order-details.tsx";
@@ -20,11 +20,10 @@ import {BurgerConstructorTotal} from "../burger-constructor-total/burger-constru
 export const BurgerConstructor = () => {
     const dispatch = useAppDispatch();
     const {selectedBun, selectedIngredients} = useAppSelector(store => store.burgerConstructor)
-    const {ingredients} = useAppSelector(store => store.ingredients)
+    const ingredients = useAppSelector(store => store.ingredients.ingredients)
     const {lastOrder, beingSent} = useAppSelector(store => store.orders)
     const wrapperRef:MutableRefObject<HTMLUListElement | null> = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
-    const [height, setHeight] = useState<number>(0);
     const {isModalOpen, openModal, closeModal} = useModal();
 
     const [{isHover}, ref] = useDrop({
@@ -39,20 +38,6 @@ export const BurgerConstructor = () => {
         })
     })
 
-    useEffect(() => {
-        window.addEventListener('resize', onResize);
-        onResize()
-        return () => {
-            window.removeEventListener('resize', onResize);
-        }
-    }, [])
-
-    const onResize = () => {
-        if(wrapperRef.current && totalRef.current) {
-            const bunHeight:number = 96;
-            setHeight(window.innerHeight - wrapperRef.current.offsetTop - totalRef.current.offsetHeight - bunHeight);
-        }
-    }
 
     const renderIngredient = useCallback((ingredient:TConstructorIngredient, index:number) => {
         const item = ingredients.find(
@@ -100,9 +85,9 @@ export const BurgerConstructor = () => {
         if(!selectedBun || selectedIngredients.length === 0) {
             alert("Выберите булку и ингридиенты для оформления заказа!");
             return;
-        } else if(beingSent) {
-            return; //Уже происходит отправка заказа
         }
+        if(beingSent) return; //Уже происходит отправка заказа
+
         const orderData: TOrderCreateRequest = {
             ingredients: [
                 selectedBun,
@@ -126,8 +111,7 @@ export const BurgerConstructor = () => {
                 }
                 <ul
                     className={styles.wrapper}
-                    ref={wrapperRef}
-                    style={{'maxHeight': height > 0 ? height + 'px' : 'auto'}}>
+                    ref={wrapperRef}>
                     {
                         selectedIngredients.map((ingredient, index) =>
                             renderIngredient(ingredient, index)
@@ -142,10 +126,9 @@ export const BurgerConstructor = () => {
                 <BurgerConstructorTotal onSubmit={onSubmitOrder}/>
             </div>
             {
-                isModalOpen && !!lastOrder && <Modal onClose={() => closeModal()}>
+                isModalOpen && !!lastOrder && (<Modal onClose={() => closeModal()}>
                     <OrderDetails/>
-                </Modal>
+                </Modal>)
             }
-        </section>
-)
+        </section>)
 }

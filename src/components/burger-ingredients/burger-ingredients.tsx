@@ -26,7 +26,6 @@ const categories:IBurgerConstructorCategory[] = [
 
 export const BurgerIngredients = () => {
     const [category, setCategory] = useState<string>("bun");
-    const [height, setHeight] = useState<number>(0);
     const {isModalOpen, openModal, closeModal} = useModal();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -34,20 +33,11 @@ export const BurgerIngredients = () => {
     const {ingredients, currentIngredient} = useAppSelector(store => store.ingredients);
 
     useEffect(() => {
-        window.addEventListener('resize', onResize);
         wrapperRef.current?.addEventListener('scroll', onScroll);
-        onResize()
         return () => {
-            window.removeEventListener('resize', onResize);
             wrapperRef.current?.removeEventListener('scroll', onScroll);
         }
     }, [])
-
-    const onResize = () => {
-        if(wrapperRef.current) {
-            setHeight(window.innerHeight - wrapperRef.current.offsetTop)
-        }
-    }
 
     const onScroll = () => {
         if(wrapperRef.current) {
@@ -81,7 +71,7 @@ export const BurgerIngredients = () => {
                     ))
                 }
             </ul>
-            <div className={styles.wrapper} ref={wrapperRef} style={{'maxHeight': height > 0 ? height + 'px' : 'auto'}}>
+            <div className={styles.wrapper} ref={wrapperRef}>
                 {
                     categories.map(({id, name}) => (
                         <div key={id} data-category={id}>

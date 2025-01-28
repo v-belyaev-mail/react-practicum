@@ -2,7 +2,7 @@ import {FC, useEffect, useMemo, useRef, useState} from "react";
 import {MenuItemType} from "./menu-types.ts";
 import styles from "./menu.module.css"
 
-const MenuItem:FC<MenuItemType> = ({title, href, icon, selected}) => {
+const MenuItem:FC<MenuItemType> = ({title, icon, selected}) => {
     const Icon = icon;
     const itemRef = useRef<HTMLSpanElement |null>(null);
     const [isHovered, setHovered] = useState<boolean>(false)
@@ -35,7 +35,7 @@ const MenuItem:FC<MenuItemType> = ({title, href, icon, selected}) => {
     return (
         <span className={styles.menuButton} ref={itemRef}>
             <Icon type={isHovered || selected ? "primary" : "secondary"}/>
-            <a href={href} className={textClassName}>{title}</a>
+            <span className={textClassName}>{title}</span>
         </span>
     )
 

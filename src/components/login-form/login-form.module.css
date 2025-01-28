@@ -1,0 +1,32 @@
+.wrapper {
+    composes: burger-app-flex-column-center from global;
+    gap: calc(var(--offset-base-size) * 20);
+}
+
+.form {
+    composes: burger-app-flex-column-center from global;
+    gap: calc(var(--offset-base-size) * 6);
+}
+
+.link_label {
+    composes: text text_type_main-small from global;
+    color: var(--burger-app-link-label-color);
+}
+
+.link {
+    composes: text text_type_main-small from global;
+    color: var(--burger-app-link-color);
+    text-decoration: none;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.bottom_block {
+    composes: burger-app-flex-column-center from global;
+    gap: 16px;
+}

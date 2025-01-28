@@ -1,8 +1,13 @@
 :root {
   --burger-app-width: 1280px;
   --burger-app-content-width: 1240px;
+  --burger-app-link-color: #4C4CFF;
+  --burger-app-link-label-color: #8585AD;
+  --burger-app-nav-link-color: #8585AD;
+  --burger-app-nav-link-active-color: #F2F2F3;
   --burger-app-modal-width: 720px;
   --burger-app-modal-content-width: 520px;
+  --burger-app-header-height: 96px;
 }
 
 body {
@@ -16,6 +21,9 @@ ul,li,p {
   padding: 0;
 }
 
+a {
+  text-decoration: none;
+}
 
 .burger-app {
   display: grid;
@@ -32,10 +40,21 @@ ul,li,p {
   display: flex;
   justify-content: center;
   background: #1C1C21;
-  box-shadow: 0px 4px 8px 0px #0000000A;
+  box-shadow: 0 4px 8px 0 #0000000A;
 }
 
 .burger-app main {
   grid-area: content;
   justify-self: center;
+}
+
+.burger-app-container {
+  height: calc(100vh - var(--burger-app-header-height));
+}
+
+.burger-app-flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

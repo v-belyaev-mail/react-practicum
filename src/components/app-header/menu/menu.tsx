@@ -2,17 +2,18 @@ import {BurgerIcon, ListIcon} from "@ya.praktikum/react-developer-burger-ui-comp
 import MenuItem from "./menu-item.tsx";
 import {MenuItemType} from "./menu-types.ts";
 import styles from './menu.module.css';
+import {NavLink} from "react-router-dom";
 
 const menuItems:MenuItemType[] = [
     {
         title: "Конструктор",
-        href: "#",
+        href: "/",
         icon: BurgerIcon,
         selected: true
     },
     {
         title: "Лента заказов",
-        href: "#",
+        href: "/orders",
         icon: ListIcon
     }
 ];
@@ -23,9 +24,15 @@ const Menu = () =>
         <nav className={styles.nav}>
             <ul>
                 {
-                    menuItems.map((item:MenuItemType, index: number) => (
-                        <li key={index}>
-                            <MenuItem {...item}></MenuItem>
+                    menuItems.map((item:MenuItemType) => (
+                        <li key={item.href}>
+                            <NavLink to={{pathname: item.href}}>
+                                {
+                                    ({isActive}) => (
+                                        <MenuItem {...item} selected={isActive}></MenuItem>
+                                    )
+                                }
+                            </NavLink>
                         </li>
                     ))
                 }

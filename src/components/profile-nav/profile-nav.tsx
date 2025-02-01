@@ -1,10 +1,13 @@
 import styles from './profile-nav.module.css';
-import {NavLink, NavLinkRenderProps, useLocation} from "react-router-dom";
-import {useMemo} from "react";
+import {NavLink, NavLinkRenderProps, useLocation, useNavigate} from "react-router-dom";
+import {MouseEvent, useMemo} from "react";
+import {useAppDispatch} from "../../hooks/redux.ts";
+import {logout} from "../../services/slices/user.ts";
 
 export const ProfileNav = () => {
-
+    const dispatch = useAppDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const description = useMemo(() => {
         if(location.pathname === "/profile") {
@@ -28,6 +31,14 @@ export const ProfileNav = () => {
         return className;
     }
 
+    const onLogout = (event: MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+
+        dispatch(logout()).unwrap().then(() => {
+            navigate({pathname: '/login'});
+        })
+    }
+
     return (
         <nav className={styles.nav}>
             <ul className={styles.profile_nav}>
@@ -42,9 +53,9 @@ export const ProfileNav = () => {
                     </NavLink>
                 </li>
                 <li className={styles.profile_nav_li}>
-                    <NavLink to={{pathname:'/log-out'}} className={linkClassName}>
+                    <a href="#" className={styles.link} onClick={onLogout}>
                         Выход
-                    </NavLink>
+                    </a>
                 </li>
             </ul>
             {

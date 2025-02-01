@@ -1,25 +1,53 @@
 import styles from './login-form.module.css';
-import {useState} from "react";
+import {FormEvent, useState} from "react";
 import {Button, EmailInput, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useAppDispatch} from "../../hooks/redux.ts";
+import {TLoginUser} from "../../utils/types.ts";
+import {login} from "../../services/slices/user.ts";
+import {SerializedError} from "@reduxjs/toolkit";
 
 export const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | undefined>();
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const { from } = location.state ?? { from: { pathname: "/"} };
+
+    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const userData:TLoginUser = {email, password};
+        setError(undefined)
+        dispatch(login(userData)).unwrap()
+            .then(() => {
+                navigate(from);
+            })
+            .catch((err:SerializedError) => {
+                setError(err.message)
+            })
+    }
 
     return (
         <section className={styles.wrapper}>
-            <form className={styles.form}>
+            <form className={styles.form} onSubmit={onSubmit}>
                 <h2 className="text text_type_main-medium">Вход</h2>
+                {!!error && (<h3 className={styles.error}>{error}</h3>)}
                 <EmailInput
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="E-mail"
+                    name="email"
                 />
                 <PasswordInput
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Пароль"
+                    name="password"
                 />
                 <Button
                     htmlType="submit"

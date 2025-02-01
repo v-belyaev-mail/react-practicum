@@ -9,7 +9,8 @@ type TBurgerConstructorTotalProps = {
 
 export const BurgerConstructorTotal:FC<TBurgerConstructorTotalProps> = ({onSubmit}) => {
     const {selectedBun, selectedIngredients} = useAppSelector(store => store.burgerConstructor)
-    const {ingredients} = useAppSelector(store => store.ingredients)
+    const ingredients = useAppSelector(store => store.ingredients.ingredients)
+    const beingSent = useAppSelector(store => store.orders.beingSent)
 
     const totalPrice:number = useMemo(
         () => {
@@ -40,7 +41,11 @@ export const BurgerConstructorTotal:FC<TBurgerConstructorTotalProps> = ({onSubmi
                 <CurrencyIcon type="primary"/>
             </span>
             <Button htmlType="submit" size="large" onClick={onSubmit}>
-                Оформить заказ
+                {
+                    beingSent ? (
+                        <span className="burger-app-loader"></span>
+                    ) : ('Оформить заказ')
+                }
             </Button>
         </>
     )

@@ -25,3 +25,9 @@
     justify-content: center;
     gap: 6px;
 }
+
+.error {
+    composes: text text_type_main-small from global;
+    color: red;
+    padding: 5px 0;
+}

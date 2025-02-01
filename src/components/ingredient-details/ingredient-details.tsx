@@ -1,12 +1,20 @@
-import {IBurgerConstructorIngredient} from "../../utils/types.ts";
-import {FC} from "react";
 import styles from './ingredient-details.module.css'
+import {useParams} from "react-router-dom";
+import {useAppSelector} from "../../hooks/redux.ts";
 
-type IngredientDetailsProps = {
-    ingredient: IBurgerConstructorIngredient
-}
 
-export const IngredientDetails:FC<IngredientDetailsProps> = ({ingredient}) => {
+export const IngredientDetails = () => {
+    const {id} = useParams();
+
+    const ingredient = useAppSelector(
+        store => {
+            return store.ingredients.ingredients.find((ingredient) => ingredient._id === id);
+        });
+
+    if(!ingredient)
+        return null;
+
+
     return (
         <section className={styles.box}>
             <img src={ingredient.image_large} alt={ingredient.name} className={styles.image}/>

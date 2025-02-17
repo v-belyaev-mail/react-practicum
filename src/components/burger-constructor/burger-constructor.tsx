@@ -16,6 +16,8 @@ import {sendOrder} from "../../services/slices/orders.ts";
 import {useDrop} from "react-dnd";
 import {burgerConstructorSlice} from "../../services/slices/burger-constructor.ts";
 import {BurgerConstructorTotal} from "../burger-constructor-total/burger-constructor-total.tsx";
+import {getIsAuthenticated} from "../../services/slices/user.ts";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export const BurgerConstructor = () => {
     const dispatch = useAppDispatch();
@@ -25,6 +27,10 @@ export const BurgerConstructor = () => {
     const wrapperRef:MutableRefObject<HTMLUListElement | null> = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
     const {isModalOpen, openModal, closeModal} = useModal();
+    const isAuthenicate = useAppSelector(getIsAuthenticated);
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const [{isHover}, ref] = useDrop({
         accept: "ingredients",
@@ -67,7 +73,7 @@ export const BurgerConstructor = () => {
         ) : (
             <ConstructorElement
                 isLocked={true}
-                thumbnail={'images/empty-burger.svg'}
+                thumbnail={'/images/empty-burger.svg'}
                 price={0}
                 type={type}
                 text="Выберите булку"
@@ -88,6 +94,11 @@ export const BurgerConstructor = () => {
         }
         if(beingSent) return; //Уже происходит отправка заказа
 
+        if(!isAuthenicate) {
+            navigate('/login', {state: location})
+            return;
+        }
+
         const orderData: TOrderCreateRequest = {
             ingredients: [
                 selectedBun,
@@ -95,8 +106,8 @@ export const BurgerConstructor = () => {
                 selectedBun
             ],
         }
-        dispatch(sendOrder(orderData)).then((res) => {
-            if(res.payload?.number) {
+        dispatch(sendOrder(orderData)).unwrap().then((payload) => {
+            if(payload.number) {
                 openModal();
                 dispatch(burgerConstructorSlice.actions.clear())
             }

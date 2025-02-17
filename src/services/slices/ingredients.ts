@@ -3,13 +3,11 @@ import {IBurgerConstructorIngredient, TRequestState} from "../../utils/types.ts"
 import {getIngredientsApi} from "../api.ts";
 
 type TIngredientInitialState = {
-    currentIngredient: IBurgerConstructorIngredient | null,
     ingredients: IBurgerConstructorIngredient[],
 } & TRequestState
 
 const ingredientsInitialState: TIngredientInitialState = {
     ingredients: [],
-    currentIngredient: null,
     loading: false,
     error: null
 }
@@ -26,9 +24,6 @@ export const ingredientsSlice = createSlice({
     initialState: ingredientsInitialState,
     reducerPath: 'ingredients',
     reducers: {
-        setCurrentIngredient: (state, action) => {
-            state.currentIngredient = action.payload;
-        }
     },
     extraReducers: builder => {
         builder.addCase(loadIngredients.pending, (state) => {

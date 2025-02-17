@@ -1,0 +1,7 @@
+.container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: calc(100vh - var(--burger-app-header-height));
+    width: var(--burger-app-content-width);
+    grid-gap: 0 calc(var(--offset-base-size) * 15);
+}

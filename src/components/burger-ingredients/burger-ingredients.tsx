@@ -1,13 +1,10 @@
 import {Tab} from "@ya.praktikum/react-developer-burger-ui-components";
-import {IBurgerConstructorCategory, IBurgerConstructorIngredient} from "../../utils/types.ts";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {IBurgerConstructorCategory} from "../../utils/types.ts";
+import {useEffect, useRef, useState} from "react";
 import styles from './burger-ingredients.module.css'
 import {Ingredient} from "../ingredient/ingredient.tsx";
-import {Modal} from "../modal/modal.tsx";
-import {IngredientDetails} from "../ingredient-details/ingredient-details.tsx";
-import {useModal} from "../../hooks/useModal.ts";
-import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
-import {ingredientsSlice} from "../../services/slices/ingredients.ts";
+import {useAppSelector} from "../../hooks/redux.ts";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const categories:IBurgerConstructorCategory[] = [
     {
@@ -26,11 +23,11 @@ const categories:IBurgerConstructorCategory[] = [
 
 export const BurgerIngredients = () => {
     const [category, setCategory] = useState<string>("bun");
-    const {isModalOpen, openModal, closeModal} = useModal();
     const wrapperRef = useRef<HTMLDivElement>(null);
 
-    const dispatch = useAppDispatch();
-    const {ingredients, currentIngredient} = useAppSelector(store => store.ingredients);
+    const location = useLocation();
+    const navigate = useNavigate();
+    const ingredients = useAppSelector(store => store.ingredients.ingredients);
 
     useEffect(() => {
         wrapperRef.current?.addEventListener('scroll', onScroll);
@@ -50,15 +47,12 @@ export const BurgerIngredients = () => {
         }
     }
 
-    const onClosePopup:() => void = useCallback(() => {
-        dispatch(ingredientsSlice.actions.setCurrentIngredient(null));
-        closeModal();
-    }, [dispatch, closeModal]);
-
-    const onShowPopup:(ingredient: IBurgerConstructorIngredient) => void = useCallback((ingredient) => {
-        dispatch(ingredientsSlice.actions.setCurrentIngredient(ingredient));
-        openModal();
-    }, [dispatch, openModal]);
+    const onSelectIngredient = (ingredientId: string) => {
+        navigate(
+            `/ingredients/${ingredientId}`,
+            {state: {background: location}}
+       )
+    };
 
     return (
         <>
@@ -82,7 +76,7 @@ export const BurgerIngredients = () => {
                                         ingredient.type === id && <Ingredient
                                             item={ingredient}
                                             key={ingredient._id}
-                                            onDetail={() => onShowPopup(ingredient)}
+                                            onDetail={() => onSelectIngredient(ingredient._id)}
                                         />
                                     ))
                                 }
@@ -91,9 +85,6 @@ export const BurgerIngredients = () => {
                     ))
                 }
             </div>
-            {isModalOpen && currentIngredient && <Modal title="Детали ингредиента" onClose={onClosePopup}>
-                <IngredientDetails ingredient={currentIngredient}/>
-            </Modal>}
         </>
     )
 }

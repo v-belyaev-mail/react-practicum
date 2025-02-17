@@ -1,0 +1,25 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: calc(var(--offset-base-size) * 20);
+    padding-top: 120px;
+}
+
+.form {
+    composes: burger-app-flex-column-center from global;
+    gap: calc(var(--offset-base-size) * 6);
+}
+
+.buttonContainer {
+    display: flex;
+    gap: calc(var(--offset-base-size) * 5);
+    align-self: flex-end;
+}
+
+.error {
+    composes: text text_type_main-small from global;
+    color: red;
+    padding: 5px 0;
+}

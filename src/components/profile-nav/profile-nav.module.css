@@ -1,0 +1,40 @@
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    box-sizing: border-box;
+    padding-top: 120px;
+}
+
+.profile_nav {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+}
+
+.profile_nav_li {
+    composes: text text_type_main-medium from global;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    height: 64px;
+}
+
+.link {
+    composes: text text_type_main-medium from global;
+    color: var(--burger-app-nav-link-color);
+    text-decoration: none;
+    &:hover {
+        color: var(--burger-app-nav-link-active-color);
+    }
+}
+
+.link_active {
+    color: var(--burger-app-nav-link-active-color);
+}
+
+.desc {
+    composes: text text_type_main-default from global;
+    color: var(--burger-app-nav-link-color);
+    opacity: 40%;
+}

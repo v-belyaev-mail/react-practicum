@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {TOrderCreateResponse, TOrderCreateRequest} from "../../utils/types.ts";
+import {TOrderCreateRequest, TOrderCreateResponseData} from "../../utils/types.ts";
 import {sendOrderApi} from "../api.ts";
 
 type TOrdersInitialState = {
-    lastOrder: TOrderCreateResponse | null,
+    lastOrder: TOrderCreateResponseData | null,
     beingSent: boolean,
 }
 
@@ -14,8 +14,12 @@ const ordersInitialState: TOrdersInitialState = {
 
 export const sendOrder = createAsyncThunk(
     'orders/send',
-    async (data:TOrderCreateRequest) => {
-        return await sendOrderApi(data)
+    async (data:TOrderCreateRequest, {rejectWithValue}) => {
+        const response = await sendOrderApi(data);
+        if(!response.success)
+            return rejectWithValue(response)
+
+        return response.order;
     }
 )
 
@@ -27,8 +31,8 @@ export const ordersSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(sendOrder.fulfilled, (state, action) => {
-                state.lastOrder = action.payload;
+            .addCase(sendOrder.fulfilled, (state, {payload}) => {
+                state.lastOrder = payload;
                 state.beingSent = false;
             })
             .addCase(sendOrder.pending, (state) => {

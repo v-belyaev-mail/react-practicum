@@ -14,11 +14,11 @@
 .menuButtonText {
     composes: pl-2 text text_type_main-default from global;
     text-decoration: none;
-    color: #8585AD;
+    color: var(--burger-app-nav-link-color);
 }
 
 .hovered {
-    color: #F2F2F3;
+    color: var(--burger-app-nav-link-active-color);
 }
 
 .nav ul {

@@ -2,11 +2,13 @@ import {combineSlices, configureStore} from '@reduxjs/toolkit';
 import {ingredientsSlice} from "./slices/ingredients.ts";
 import {burgerConstructorSlice} from "./slices/burger-constructor.ts";
 import {ordersSlice} from "./slices/orders.ts";
+import {userSlice} from "./slices/user.ts";
 
 const rootReducer = combineSlices(
     ingredientsSlice,
     burgerConstructorSlice,
     ordersSlice,
+    userSlice,
 )
 
 const store = configureStore({

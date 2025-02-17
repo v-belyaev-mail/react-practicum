@@ -3,7 +3,7 @@ import {TIconProps} from "@ya.praktikum/react-developer-burger-ui-components/dis
 
 export type MenuItemType = {
     title: string,
-    href: string,
+    href?: string,
     icon: FC<TIconProps>
     selected?: boolean;
 }

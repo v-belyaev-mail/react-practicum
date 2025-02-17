@@ -5,22 +5,29 @@ import {Link, useNavigate} from "react-router-dom";
 import {FormEvent} from "react";
 import {forgotPassworApi} from "../../services/api.ts";
 import {TResponse} from "../../utils/types.ts";
+import {useForm} from "../../hooks/useForm.ts";
+
+type TForgotPasswordForm = {
+    email: string;
+}
 
 export const ForgotPasswordForm = () => {
-    const [email, setEmail] = useState('');
+    const {values, handleChange} = useForm<TForgotPasswordForm>({
+        email: ''
+    })
     const [isSent, setSent] = useState(false);
     const [error, setError] = useState<string|undefined>();
     const navigate = useNavigate();
 
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!email || isSent)
+        if (!values.email || isSent)
             return;
 
         setError(undefined);
         setSent(true);
 
-        forgotPassworApi(email)
+        forgotPassworApi(values.email)
             .then(() => {
                 setSent(false)
                 localStorage.setItem('forgot_password', 'Y');
@@ -41,9 +48,10 @@ export const ForgotPasswordForm = () => {
                 <h2 className="text text_type_main-medium">Восстановление пароля</h2>
                 {!!error && <h3 className={styles.error}>{error}</h3>}
                 <EmailInput
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={handleChange}
                     placeholder="Укажите e-mail"
+                    name="email"
                     required
                 />
                 <Button htmlType="submit" type="primary" size="medium">Восстановить</Button>

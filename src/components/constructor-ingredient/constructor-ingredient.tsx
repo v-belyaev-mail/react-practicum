@@ -36,7 +36,7 @@ export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, typ
 
     const [{handlerId}, ingredientDrop] = useDrop<
         TDragIngredientProps,
-        void,
+        unknown,
         { handlerId: Identifier | null }
     >({
         accept: "sort-ingredients",

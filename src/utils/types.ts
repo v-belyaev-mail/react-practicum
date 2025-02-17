@@ -98,9 +98,9 @@ export type TLoginUserResponse = TTokenResponse & {
 }
 
 export type TUserEditForm = {
-    email?: string;
+    email: string;
     password?: string;
-    name?: string;
+    name: string;
 }
 
 export type TIngredientResponse = TResponse & {

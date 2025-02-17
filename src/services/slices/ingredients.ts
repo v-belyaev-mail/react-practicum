@@ -14,8 +14,12 @@ const ingredientsInitialState: TIngredientInitialState = {
 
 export const loadIngredients = createAsyncThunk(
     'ingredients/load',
-    async () => {
-        return await getIngredientsApi()
+    async (_p, {rejectWithValue}) => {
+        const response = await getIngredientsApi();
+        if(!response.success)
+            return rejectWithValue(response)
+
+        return response.data;
     }
 )
 
@@ -35,7 +39,7 @@ export const ingredientsSlice = createSlice({
             state.loading = false
         })
         builder.addCase(loadIngredients.rejected, (state, action) => {
-            state.error = action.error.message ?? null
+            state.error = action.error?.message ?? null
             state.loading = false
         })
     }

@@ -60,6 +60,7 @@ export const ProfileForm = () => {
                     onChange={handleChange}
                     icon={'EditIcon'}
                     placeholder="Пароль"
+                    name="password"
                 />
                 {
                     hasChanges && (

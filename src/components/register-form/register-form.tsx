@@ -6,11 +6,14 @@ import {register} from "../../services/slices/user.ts";
 import {TRegisterUser} from "../../utils/types.ts";
 import {useAppDispatch} from "../../hooks/redux.ts";
 import {SerializedError} from "@reduxjs/toolkit";
+import {useForm} from "../../hooks/useForm.ts";
 
 export const RegisterForm = () => {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
+    const {values, handleChange} = useForm<TRegisterUser>({
+        email: '',
+        password: '',
+        name: '',
+    })
     const [error, setError] = useState<string | undefined>();
 
     const dispatch = useAppDispatch();
@@ -22,7 +25,7 @@ export const RegisterForm = () => {
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const userData:TRegisterUser = {email, name, password};
+        const userData:TRegisterUser = values;
 
         setError(undefined);
         dispatch(register(userData)).unwrap()
@@ -38,25 +41,25 @@ export const RegisterForm = () => {
         <section className={styles.wrapper}>
             <form
                 className={styles.form}
-                onSubmit={e => onSubmit(e)}
+                onSubmit={onSubmit}
             >
                 <h2 className="text text_type_main-medium">Регистрация</h2>
                 {!!error && (<h3 className={styles.error}>{error}</h3>)}
                 <Input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={values.name}
+                    onChange={handleChange}
                     placeholder="Имя"
                     name="name"
                 />
                 <EmailInput
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={handleChange}
                     placeholder="E-mail"
                     name="email"
                 />
                 <PasswordInput
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={values.password}
+                    onChange={handleChange}
                     placeholder="Пароль"
                     name="password"
                 />

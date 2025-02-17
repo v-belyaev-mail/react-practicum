@@ -3,11 +3,14 @@ import styles from "./reset-password-form.module.css";
 import {Button, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {Link, useNavigate} from "react-router-dom";
 import {resetPassworApi} from "../../services/api.ts";
-import {TResponse} from "../../utils/types.ts";
+import {TResetPasswordUser, TResponse} from "../../utils/types.ts";
+import {useForm} from "../../hooks/useForm.ts";
 
 export const ResetPasswordForm = () => {
-    const [password, setPassword] = useState('');
-    const [token, setToken] = useState('');
+    const {handleChange, values} = useForm<TResetPasswordUser>({
+        password: '',
+        token: '',
+    })
     const [isSent, setSent] = useState(false);
     const [error, setError] = useState<string|undefined>();
 
@@ -15,12 +18,12 @@ export const ResetPasswordForm = () => {
 
     const onSubmit =  (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (!password || !token || isSent)
+        if (!values.password || !values.token || isSent)
             return;
 
         setError(undefined);
         setSent(true);
-        resetPassworApi({password, token})
+        resetPassworApi(values)
             .then(() => {
                 setSent(false)
                 localStorage.removeItem('forgot_password');
@@ -41,14 +44,16 @@ export const ResetPasswordForm = () => {
                 <h2 className="text text_type_main-medium">Восстановление пароля</h2>
                 {!!error && (<h3 className={styles.error}>{error}</h3>)}
                 <PasswordInput
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    name="password"
+                    value={values.password}
+                    onChange={handleChange}
                     placeholder="Введите новый пароль"
                     required
                 />
                 <Input
-                    value={token}
-                    onChange={e => setToken(e.target.value)}
+                    name="token"
+                    value={values.token}
+                    onChange={handleChange}
                     placeholder="Введите код из письма"
                     required
                 />

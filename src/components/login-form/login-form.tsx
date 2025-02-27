@@ -6,10 +6,14 @@ import {useAppDispatch} from "../../hooks/redux.ts";
 import {TLoginUser} from "../../utils/types.ts";
 import {login} from "../../services/slices/user.ts";
 import {SerializedError} from "@reduxjs/toolkit";
+import {useForm} from "../../hooks/useForm.ts";
 
 export const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const {values, handleChange} = useForm<TLoginUser>({
+        email: '',
+        password: '',
+    })
+
     const [error, setError] = useState<string | undefined>();
 
     const dispatch = useAppDispatch();
@@ -21,9 +25,8 @@ export const LoginForm = () => {
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const userData:TLoginUser = {email, password};
         setError(undefined)
-        dispatch(login(userData)).unwrap()
+        dispatch(login(values)).unwrap()
             .then(() => {
                 navigate(from);
             })
@@ -38,14 +41,14 @@ export const LoginForm = () => {
                 <h2 className="text text_type_main-medium">Вход</h2>
                 {!!error && (<h3 className={styles.error}>{error}</h3>)}
                 <EmailInput
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={handleChange}
                     placeholder="E-mail"
                     name="email"
                 />
                 <PasswordInput
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={values.password}
+                    onChange={handleChange}
                     placeholder="Пароль"
                     name="password"
                 />

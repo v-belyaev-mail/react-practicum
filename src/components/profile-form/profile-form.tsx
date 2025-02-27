@@ -1,46 +1,37 @@
 import styles from "../profile-form/profile-form.module.css";
-import {FormEvent, useEffect, useState} from "react";
+import {FormEvent, useEffect} from "react";
 import {Button, EmailInput, Input, PasswordInput} from "@ya.praktikum/react-developer-burger-ui-components";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
 import {editUser, getUser} from "../../services/slices/user.ts";
 import {TUserEditForm} from "../../utils/types.ts";
+import {useForm} from "../../hooks/useForm.ts";
 
 export const ProfileForm = () => {
     const user = useAppSelector(getUser);
     const dispatch = useAppDispatch();
 
-    const [email, setEmail] = useState(user.email);
-    const [name, setName] = useState(user.name);
-    const [password, setPassword] = useState('');
+    const initialFormValues:TUserEditForm = {
+        email: user.email,
+        name: user.name,
+    }
+
+    const {values, handleChange, setValues} = useForm<TUserEditForm>(initialFormValues)
 
     useEffect(() => {
-        setName(user.name);
-        setEmail(user.email);
-        setPassword('');
+        setValues(initialFormValues)
     }, [user])
 
-    const hasChanges = email !== user.email || name !== user.name || !!password;
+    const hasChanges = values.email !== user.email || values.name !== user.name || !!values.password;
 
     const onCancel = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        setEmail(user.email);
-        setName(user.name);
-        setPassword('');
+        setValues(initialFormValues)
     }
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const editData:TUserEditForm = {
-            email,
-            name,
-        }
-
-        if(!!password)
-            editData.password = password;
-
-        dispatch(editUser(editData)).unwrap()
+        dispatch(editUser(values)).unwrap()
     }
 
     return (
@@ -51,24 +42,25 @@ export const ProfileForm = () => {
                 onSubmit={onSubmit}
             >
                 <Input
-                    value={name}
-                    onChange={e => setName(e.target.value)}
+                    value={values.name}
+                    onChange={handleChange}
                     placeholder="Имя"
                     name="name"
                     icon={'EditIcon'}
                 />
                 <EmailInput
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={handleChange}
                     isIcon={true}
                     placeholder="Email"
                     name="email"
                 />
                 <PasswordInput
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    value={values.password ?? ''}
+                    onChange={handleChange}
                     icon={'EditIcon'}
                     placeholder="Пароль"
+                    name="password"
                 />
                 {
                     hasChanges && (

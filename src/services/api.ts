@@ -1,4 +1,4 @@
-import {ApiGetIngredients, ApiOrder, ApiUrl} from "../constants/api.ts";
+import {ApiUrl} from "../constants/api.ts";
 import {
     TIngredientResponse,
     TLoginUser, TLoginUserResponse,
@@ -13,8 +13,22 @@ const checkResponse = <T>(res:Response):Promise<T> => {
     return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 }
 
+const checkSuccess = <T extends TResponse>(res:T):Promise<T> => {
+    if (res && res.success) {
+        return Promise.resolve(res);
+    }
+    // не забываем выкидывать ошибку, чтобы она попала в `catch`
+    return Promise.reject(res);
+};
+
+const request = <T extends TResponse>(endpoint:string, options?:RequestInit):Promise<T> => {
+    return fetch(`${ApiUrl}${endpoint}`, options)
+        .then(checkResponse<T>)
+        .then(checkSuccess<T>);
+}
+
 export const refreshToken = () => {
-    return fetch(`${ApiUrl}/auth/token`, {
+    return request<TTokenResponse>('/auth/token', {
         method: "POST",
         headers: {
             "Content-Type": "application/json;charset=utf-8",
@@ -23,31 +37,24 @@ export const refreshToken = () => {
             token: getRefreshToken(),
         }),
     })
-        .then(checkResponse<TTokenResponse>)
-        // !! Важно для обновления токена в мидлваре, чтобы запись токенов
-        // была тут, а не в fetchWithRefresh
         .then((refreshData) => {
-            if (!refreshData.success) {
-                return Promise.reject(refreshData) as Promise<TTokenResponse>;
-            }
             setTokens(refreshData.accessToken, refreshData.refreshToken);
             return refreshData;
-        });
+        })
 };
 
-export const fetchWithRefresh = async <T>(url: RequestInfo, options:RequestInit) => {
+export const fetchWithRefresh = async <T extends TResponse>(url: string, options?:RequestInit) => {
     try {
-        const res = await fetch(url, options);
-        return await checkResponse<T>(res);
+        return await request<T>(url, options)
     } catch (err:Error|any) {
         if (!!err.message) {
             if (err.message === "jwt expired") {
                 const refreshData = await refreshToken(); //обновляем токен
-                if (!(options.headers instanceof Headers))
-                    options.headers = new Headers();
-                options.headers.set('authorization', refreshData.accessToken);
-                const res = await fetch(url, options); //повторяем запрос
-                return await checkResponse<T>(res);
+                if(!options) options = {}
+                !(options.headers instanceof Headers) ?
+                    options.headers = new Headers() :
+                    options.headers.set('authorization', refreshData.accessToken);
+                return await request<T>(url, options)
             } else {
                 return Promise.reject(err);
             }
@@ -58,7 +65,7 @@ export const fetchWithRefresh = async <T>(url: RequestInfo, options:RequestInit)
 };
 
 export const forgotPassworApi = (email:string) => {
-    return fetch(`${ApiUrl}/password-reset`, {
+    return request<TResponse>('/password-reset', {
         method: 'POST',
         body: JSON.stringify({
             email
@@ -67,68 +74,40 @@ export const forgotPassworApi = (email:string) => {
             'Content-Type': 'application/json;charset=utf-8',
         }
     })
-        .then(checkResponse<TResponse>)
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res);
-        })
 }
 
 export const resetPassworApi = (form: TResetPasswordUser) => {
-    return fetch(`${ApiUrl}/password-reset/reset`, {
+    return request('/password-reset/reset', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         },
         body: JSON.stringify(form)
     })
-        .then(checkResponse<TResponse>)
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res)
-        })
 }
 
 export const registerApi = (form : TRegisterUser) => {
-    return fetch(`${ApiUrl}/auth/register`, {
+    return request<TLoginUserResponse>('/auth/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         },
         body: JSON.stringify(form)
     })
-        .then(checkResponse<TLoginUserResponse>)
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res)
-        })
 }
 
 export const loginApi = (form: TLoginUser) => {
-    return fetch(`${ApiUrl}/auth/login`, {
+    return request<TLoginUserResponse>('/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
         },
         body: JSON.stringify(form)
     })
-        .then(checkResponse<TLoginUserResponse>)
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res)
-        })
 }
 
 export const logoutApi = () => {
-    return fetch(`${ApiUrl}/auth/logout`, {
+    return request<TResponse>('/auth/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -137,23 +116,16 @@ export const logoutApi = () => {
             token: getRefreshToken()
         })
     })
-        .then(checkResponse<TResponse>)
 }
 
 export const getUserApi = () => {
     const headers = new Headers();
     headers.append('Authorization', getAccessToken() ?? '');
 
-    return fetchWithRefresh<TUserResponse>(`${ApiUrl}/auth/user`, {
+    return fetchWithRefresh<TUserResponse>('/auth/user', {
         method: 'PATCH',
         headers: headers
     })
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res)
-        })
 }
 
 export const updateUser = (form:TUserEditForm) => {
@@ -161,28 +133,15 @@ export const updateUser = (form:TUserEditForm) => {
     headers.append('Authorization', getAccessToken() ?? '');
     headers.append('Content-Type', 'application/json;charset=utf-8');
 
-    return fetchWithRefresh<TUserResponse>(`${ApiUrl}/auth/user`, {
+    return fetchWithRefresh<TUserResponse>('/auth/user', {
         method: 'PATCH',
         headers: headers,
         body: JSON.stringify(form)
     })
-        .then(res => {
-            if(res.success)
-                return res;
-
-            return Promise.reject(res)
-        })
 }
 
 export const getIngredientsApi = () => {
-    return fetch(ApiGetIngredients)
-        .then(checkResponse<TIngredientResponse>)
-        .then(res => {
-            if(res.success)
-                return res.data;
-
-            return Promise.reject(res)
-        })
+    return request<TIngredientResponse>('/ingredients/')
 };
 
 export const sendOrderApi = (data:TOrderCreateRequest) => {
@@ -190,15 +149,9 @@ export const sendOrderApi = (data:TOrderCreateRequest) => {
     headers.append('Authorization', getAccessToken() ?? '');
     headers.append('Content-Type', 'application/json;charset=utf-8');
 
-    return fetchWithRefresh<TOrderCreateResponse>(ApiOrder, {
+    return fetchWithRefresh<TOrderCreateResponse>('/orders', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: headers,
     })
-        .then(res => {
-            if(res.success) {
-                return res;
-            }
-            return Promise.reject(res)
-        })
 }

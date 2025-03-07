@@ -1,0 +1,9 @@
+ .wrapper {
+     composes: p-2 mt-9 custom-scroll from global;
+     display: flex;
+     gap: calc(var(--offset-base-size) * 6);
+     height: calc(100vh - var(--burger-app-header-height) - calc(var(--offset-base-size) * 9));
+     flex-direction: column;
+     overflow: auto;
+     box-sizing: border-box;
+ }

@@ -1,0 +1,63 @@
+.dashboard_wrapper {
+    display: grid;
+    grid-template-areas:
+    "success inwork"
+    "all all"
+    "today today";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: min-content 150px 150px;
+    gap: calc(var(--offset-base-size) * 15);
+}
+
+.scrollable {
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
+.topblock_content {
+    composes: scrollable;
+    max-width: 250px;
+    display: grid;
+    grid-template-rows: repeat(10, 1fr);
+    grid-auto-flow: column;
+    gap: calc(var(--offset-base-size) * 2);
+    column-gap: calc(var(--offset-base-size) * 4);
+    margin-top: calc(var(--offset-base-size) * 6);
+}
+
+.digits {
+    composes: text text_type_digits-default from global;
+}
+
+.digits_large {
+    composes: text text_type_digits-large from global;
+}
+
+.digits_success {
+    composes: digits;
+    color: #00CCCC;
+}
+
+.block_title {
+    composes: text text_type_main-medium from global;
+}
+
+.success_block {
+    grid-area: success;
+    display: flex;
+    flex-direction: column;
+}
+
+.today_block {
+    grid-area: today;
+    display: flex;
+    flex-direction: column;
+}
+
+.all_block {
+    grid-area: all;
+}
+
+.inwork_block {
+    grid-area: inwork;
+}

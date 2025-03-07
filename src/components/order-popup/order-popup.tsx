@@ -1,8 +1,8 @@
 import {FC} from "react";
-import styles from './order-details.module.css'
+import styles from './order-popup.module.css'
 import {useAppSelector} from "../../hooks/redux.ts";
 
-export const OrderDetails:FC = () => {
+export const OrderPopup:FC = () => {
     const {lastOrder} = useAppSelector(store => store.orders)
 
     if(!lastOrder) return;

@@ -1,0 +1,100 @@
+.wrapper {
+    composes: p-6 from global;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    background: #1C1C21;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+.item_header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item_footer {
+    composes: item_header;
+}
+
+.price {
+    composes: text text_type_digits-default from global;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ingredients_list {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.ingredient_item {
+    position: relative;
+    margin-left: -16px;
+    user-select: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-size: contain;
+    box-sizing: border-box;
+    background-color: #131316;
+    border: double 2px transparent;
+    background-image: linear-gradient(#131316, #131316),
+    linear-gradient(63.18deg, #801AB3 0%, #4C4CFF 100%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    &:first-child {
+        margin-left: 0;
+    }
+}
+
+.ingredient_image_wrap {
+    position: relative;
+    width: inherit;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ingredient_image {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    user-select: none;
+}
+
+.order_number {
+    composes: text text_type_digits-medium from global;
+    font-size: 24px;
+    &:before {
+        content: '#';
+    }
+}
+
+.expand_digit {
+    composes: text text_type_main-default from global;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title_wrap {
+    display: flex;
+    gap: 4px;
+    flex-direction: column;
+}
+
+.title {
+    composes: text text_type_main-medium from global;
+}

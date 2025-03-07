@@ -2,7 +2,7 @@ import {ApiUrl} from "../constants/api.ts";
 import {
     TIngredientResponse,
     TLoginUser, TLoginUserResponse,
-    TOrderCreateRequest, TOrderCreateResponse,
+    TOrderCreateRequest, TOrderCreateResponse, TOrderFetchResponse,
     TRegisterUser,
     TResetPasswordUser, TResponse,
     TTokenResponse, TUserEditForm, TUserResponse
@@ -154,4 +154,8 @@ export const sendOrderApi = (data:TOrderCreateRequest) => {
         body: JSON.stringify(data),
         headers: headers,
     })
+}
+
+export const fetchOrderByNumberApi = (number: number|string) => {
+    return request<TOrderFetchResponse>(`/orders/${number}`)
 }

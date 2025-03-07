@@ -8,7 +8,10 @@ export const clearTokens = () => {
     localStorage.removeItem('refreshToken');
 }
 
-export const getAccessToken = () => {
+export const getAccessToken = (onlyToken: boolean = false) => {
+    if(onlyToken) {
+        return localStorage.getItem('accessToken')?.replace('Bearer ', '');
+    }
     return localStorage.getItem('accessToken');
 }
 

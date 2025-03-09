@@ -5,6 +5,7 @@ import {LoginPage} from "./login-page/login-page.tsx";
 import {ForgotPasswordPage} from "./forgot-password-page/forgot-password-page.tsx";
 import {ResetPasswordPage} from "./reset-password-page/reset-password-page.tsx";
 import {ProfilePage} from "./profile-page/profile-page.tsx";
+import {FeedPage} from "./feed-page/feed-page.tsx";
 
 export {
     RegisterPage,
@@ -13,5 +14,6 @@ export {
     LoginPage,
     ForgotPasswordPage,
     ResetPasswordPage,
-    ProfilePage
+    ProfilePage,
+    FeedPage,
 }

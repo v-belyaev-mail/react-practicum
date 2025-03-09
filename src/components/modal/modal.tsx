@@ -5,12 +5,13 @@ import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 import {ModalOverlay} from "../modal-overlay/modal-overlay.tsx";
 
 type ModalProps = {
-    title?: string,
-    children: ReactNode,
-    onClose: () => void,
+    title?: string | (() => string);
+    titleClassName?: string;
+    children: ReactNode;
+    onClose: () => void;
 }
 
-export const Modal:FC<ModalProps> = ({title, children, onClose}) => {
+export const Modal:FC<ModalProps> = ({title, children, onClose, titleClassName}) => {
     const container:HTMLElement|null = document.getElementById('modals');
 
     useEffect(() => {
@@ -31,13 +32,15 @@ export const Modal:FC<ModalProps> = ({title, children, onClose}) => {
         onClose()
     }, [onClose])
 
+    const titleClass = titleClassName ? `${styles.title} ${titleClassName}` : styles.title
+
     return container && createPortal(
     <>
         <div className={styles.modal}>
             {
                 title ?
                     <header className={styles.header}>
-                        <h1 className={styles.title}>{title}</h1>
+                        <h1 className={titleClass}>{typeof title === "function" ? title() : title}</h1>
                         <CloseIcon type={"primary"} onClick={onCloseClick} className={styles.close_icon}/>
                     </header> :
                     <CloseIcon type={"primary"} onClick={onCloseClick} className={styles.close_icon_no_title}/>

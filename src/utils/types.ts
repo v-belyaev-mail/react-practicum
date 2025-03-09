@@ -1,3 +1,9 @@
+export enum WebsocketStatus {
+    CONNECTING = 'CONNECTING...',
+    ONLINE = 'ONLINE',
+    OFFLINE = 'OFFLINE'
+}
+
 export interface IBurgerConstructorCategory {
     id: string;
     name: string;
@@ -18,6 +24,10 @@ export interface IBurgerConstructorIngredient {
     __v: number;
 }
 
+export interface IBurgerOrderIngredient extends IBurgerConstructorIngredient {
+    count: number;
+}
+
 export type TRequestState = {
     loading: boolean;
     error: string | null;
@@ -27,9 +37,9 @@ export type TOrderCreateRequest = {
     ingredients: string[];
 }
 
-export type TOrderCreateResponseData = {
+export type TOrder = {
     _id: string;
-    number: string;
+    number: number;
     name: string;
     createdAt: string;
     ingredients: IBurgerConstructorIngredient[],
@@ -39,9 +49,29 @@ export type TOrderCreateResponseData = {
     updatedAt: string;
 }
 
+export type TOrderSimple = Omit<TOrder, 'owner' | 'price' | 'ingredients'> & {
+    ingredients: string[];
+    owner?: string;
+}
+
+export type TOrderSimpleUi = Omit<TOrderSimple, 'ingredients'> & {
+    ingredients: IBurgerOrderIngredient[];
+    total: number;
+}
+
+export type TOrderFetchResponse = TResponse & {
+    orders: TOrderSimple[];
+}
+
 export type TOrderCreateResponse = TResponse & {
     name: string;
-    order: TOrderCreateResponseData;
+    order: TOrder;
+}
+
+export type TOrderWsResponse = TResponse & {
+    orders: TOrderSimple[];
+    total: number;
+    totalToday: number;
 }
 
 export type TIngredientDropData = {

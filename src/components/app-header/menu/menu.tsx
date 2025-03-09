@@ -13,7 +13,7 @@ const menuItems:MenuItemType[] = [
     },
     {
         title: "Лента заказов",
-        href: "/orders",
+        href: "/feed",
         icon: ListIcon
     }
 ];

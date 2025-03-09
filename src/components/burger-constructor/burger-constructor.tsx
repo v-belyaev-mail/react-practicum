@@ -3,7 +3,7 @@ import {ConstructorElement} from "@ya.praktikum/react-developer-burger-ui-compon
 import {MutableRefObject, SyntheticEvent, useCallback, useRef} from "react";
 import {ConstructorIngredient} from "../constructor-ingredient/constructor-ingredient.tsx";
 import {Modal} from "../modal/modal.tsx";
-import {OrderDetails} from "../order-details/order-details.tsx";
+import {OrderPopup} from "../order-popup/order-popup.tsx";
 import {useModal} from "../../hooks/useModal.ts";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux.ts";
 import {
@@ -138,7 +138,7 @@ export const BurgerConstructor = () => {
             </div>
             {
                 isModalOpen && !!lastOrder && (<Modal onClose={() => closeModal()}>
-                    <OrderDetails/>
+                    <OrderPopup/>
                 </Modal>)
             }
         </section>)

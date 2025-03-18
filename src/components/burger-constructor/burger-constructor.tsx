@@ -26,13 +26,14 @@ export const BurgerConstructor = () => {
     const {lastOrder, beingSent} = useAppSelector(store => store.orders)
     const wrapperRef:MutableRefObject<HTMLUListElement | null> = useRef<HTMLUListElement>(null);
     const totalRef = useRef<HTMLDivElement>(null);
+    const ingredientRef = useRef<HTMLDivElement | null>(null)
     const {isModalOpen, openModal, closeModal} = useModal();
     const isAuthenicate = useAppSelector(getIsAuthenticated);
 
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [{isHover}, ref] = useDrop({
+    const [{isHover}, dragConnector] = useDrop({
         accept: "ingredients",
         drop(item:TIngredientDropData) {
             item.type === "bun"
@@ -43,6 +44,8 @@ export const BurgerConstructor = () => {
             isHover: monitor.isOver(),
         })
     })
+
+    dragConnector(ingredientRef)
 
 
     const renderIngredient = useCallback((ingredient:TConstructorIngredient, index:number) => {
@@ -116,7 +119,11 @@ export const BurgerConstructor = () => {
 
     return (
         <section className={styles.box}>
-            <div ref={ref} className={`${styles.ingredientsBox} ${isHover ? styles.whenHoverDrop : ""}`}>
+            <div
+                ref={ingredientRef}
+                className={`${styles.ingredientsBox} ${isHover ? styles.whenHoverDrop : ""}`}
+                data-cy="constructor-wrapper"
+            >
                 {
                     renderBun("top", selectedBun)
                 }
@@ -133,7 +140,7 @@ export const BurgerConstructor = () => {
                     renderBun("bottom", selectedBun)
                 }
             </div>
-            <div className={styles.total} ref={totalRef}>
+            <div className={styles.total} ref={totalRef} data-cy="constructor-total">
                 <BurgerConstructorTotal onSubmit={onSubmitOrder}/>
             </div>
             {

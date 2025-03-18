@@ -8,7 +8,7 @@ type TOrdersInitialState = {
     orders: TOrderSimple[],
 }
 
-const ordersInitialState: TOrdersInitialState = {
+export const ordersInitialState: TOrdersInitialState = {
     lastOrder: null,
     beingSent: false,
     orders: [],

@@ -6,7 +6,7 @@ type TIngredientInitialState = {
     ingredients: IBurgerConstructorIngredient[],
 } & TRequestState
 
-const ingredientsInitialState: TIngredientInitialState = {
+export const ingredientsInitialState: TIngredientInitialState = {
     ingredients: [],
     loading: false,
     error: null

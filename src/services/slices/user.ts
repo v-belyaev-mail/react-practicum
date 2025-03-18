@@ -9,7 +9,7 @@ type TUserInitialState = {
     user: TUser
 }
 
-const userInitialState:TUserInitialState = {
+export const userInitialState:TUserInitialState = {
     isAuthenticated: false,
     isAuthChecked: false,
     user: {

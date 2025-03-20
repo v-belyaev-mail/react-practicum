@@ -36,7 +36,7 @@ export const Modal:FC<ModalProps> = ({title, children, onClose, titleClassName})
 
     return container && createPortal(
     <>
-        <div className={styles.modal}>
+        <div className={styles.modal} data-cy="modal">
             {
                 title ?
                     <header className={styles.header}>

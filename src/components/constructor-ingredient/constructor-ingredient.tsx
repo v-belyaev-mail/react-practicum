@@ -23,6 +23,7 @@ type TDragIngredientProps = {
 export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, type, index, onMove, ingredientKey}) => {
     const dispatch = useAppDispatch();
     const ingredientRef = useRef<HTMLDivElement | null>(null)
+    const previewRef = useRef<HTMLDivElement | null>(null)
     const [{isDragging}, ingredientDrag, ingredientPreview] = useDrag({
         type: "sort-ingredients",
         item: {
@@ -86,6 +87,7 @@ export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, typ
     })
     const opacity = isDragging ? 0 : 1
     ingredientDrag(ingredientDrop(ingredientRef))
+    ingredientPreview(previewRef)
 
     let itemName:string = item.name;
     let className:string = styles.element;
@@ -112,7 +114,7 @@ export const ConstructorIngredient:FC<TConstructorIngredientProps> = ({item, typ
     return (
         <div className={className} ref={ingredientRef} style={{opacity}} data-handler-id={handlerId}>
             {
-                !type && <span className={styles.drag_icon} ref={ingredientPreview}>
+                !type && <span className={styles.drag_icon} ref={previewRef}>
                 <DragIcon type="primary"/>
                 </span>
             }

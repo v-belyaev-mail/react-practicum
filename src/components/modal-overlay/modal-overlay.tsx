@@ -7,6 +7,6 @@ type ModalOverlayProps = {
 
 export const ModalOverlay:FC<ModalOverlayProps> = ({onClick}) => {
     return (
-        <div className={styles.overlay} onClick={() => onClick && onClick()}></div>
+        <div className={styles.overlay} data-cy="modal-overlay" onClick={() => onClick && onClick()}></div>
     )
 }

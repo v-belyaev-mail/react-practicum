@@ -65,7 +65,7 @@ export const BurgerIngredients = () => {
                     ))
                 }
             </ul>
-            <div className={styles.wrapper} ref={wrapperRef}>
+            <div className={styles.wrapper} ref={wrapperRef} data-cy="ingredients-wrapper">
                 {
                     categories.map(({id, name}) => (
                         <div key={id} data-category={id}>

@@ -11,7 +11,7 @@ type TBurgerConstructorAction = {
     type: string;
 }
 
-const burgerConstructorInitialState: TBurgerConstructorInitialState = {
+export const burgerConstructorInitialState: TBurgerConstructorInitialState = {
     selectedBun: null,
     selectedIngredients: []
 }
